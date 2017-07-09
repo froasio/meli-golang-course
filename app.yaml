@@ -1,0 +1,7 @@
+runtime: go
+env: flex
+
+# [START env_variables]
+env_variables:
+  GIN_MODE: release
+# [END env_variables]
