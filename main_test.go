@@ -55,11 +55,8 @@ func TestWhenServiceCanCalculateCategoryPricingTheApiRespondsOk(t *testing.T) {
 
 func TestWhenServiceCannotCalculateCategoryPricingTheApiRespondsBadRequest(t *testing.T) {
 
-	gin.SetMode(gin.TestMode)
-	router := gin.New()
-	setCategoryPricerRoute(router, &categoryMeliMock{})
+	router, w := getRouter(&categoryMeliMock{})
 
-	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/categories/MLA1231/prices", nil)
 	router.ServeHTTP(w, r)
 
