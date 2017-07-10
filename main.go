@@ -6,9 +6,9 @@ import (
 	"net/http"
 )
 
-func CategoryPricerHandler(categoryService category.CategoryService) gin.HandlerFunc {
+func setCategoryPricerRoute(router *gin.Engine, categoryService category.CategoryService) {
 
-	fn := func(c *gin.Context) {
+	router.GET("/categories/:category/prices", func(c *gin.Context) {
 
 		categoryId := c.Param("category")
 
@@ -19,15 +19,7 @@ func CategoryPricerHandler(categoryService category.CategoryService) gin.Handler
 		} else {
 			c.JSON(http.StatusOK, data.Map())
 		}
-	}
-
-	return gin.HandlerFunc(fn)
-
-}
-
-func setCategoryPricerRoute(router *gin.Engine, categoryService category.CategoryService) {
-
-	router.GET("/categories/:category/prices", CategoryPricerHandler(categoryService))
+	})
 
 }
 
