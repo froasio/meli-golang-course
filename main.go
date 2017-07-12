@@ -26,8 +26,8 @@ func setCategoryPricerRoute(router *gin.Engine, categoryService category.Categor
 func main() {
 
 	router := gin.Default()
-
-	setCategoryPricerRoute(router, &category.CategoryMeli{})
+	categoryService := category.New()
+	setCategoryPricerRoute(router, categoryService)
 
 	router.Run(":8080")
 

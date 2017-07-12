@@ -1,24 +1,28 @@
 package category
 
 import (
-	"errors"
+	"meli-golang-course/meliclient"
 )
 
 type Data interface {
 	Map() map[string]interface{}
 }
 
-type CategoryData struct {
+type CategoryPriceData struct {
+	id        string
 	min       float64
 	suggested float64
 	max       float64
+	total     int
 }
 
-func (cd *CategoryData) Map() map[string]interface{} {
+func (cd *CategoryPriceData) Map() map[string]interface{} {
 	return map[string]interface{}{
+		"Id":        cd.id,
 		"Min":       cd.min,
 		"Suggested": cd.suggested,
 		"Max":       cd.max,
+		"Total":     cd.total,
 	}
 }
 
@@ -26,14 +30,22 @@ type CategoryService interface {
 	Price(categoryId string) (data Data, err error)
 }
 
-type CategoryMeli struct {
+type categoryMeli struct {
+	client meliclient.Client
 }
 
-func (c *CategoryMeli) Price(categoryId string) (data Data, err error) {
+func New() *categoryMeli {
+	return &categoryMeli{client: meliclient.New()}
+}
 
-	if categoryId == "MLA1234" {
-		return &CategoryData{1.0, 5.0, 10.0}, nil
+func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
+	categoryPriceData := &CategoryPriceData{}
+	categoryData, err := c.client.GetCategory(categoryId)
+	if err != nil {
+		return categoryPriceData, err
 	}
 
-	return &CategoryData{}, errors.New("Invalid Category")
+	categoryPriceData.id = categoryData.Id
+	categoryPriceData.total = categoryData.Total_items_in_this_category
+	return categoryPriceData, nil
 }
