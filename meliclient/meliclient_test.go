@@ -6,7 +6,7 @@ import (
 
 func TestWhenCountryIsValidCountryCodeGetterReturnsCountryCode(t *testing.T) {
 
-	client := meliclient.New()
+	client := New()
 	countryCode, err:= client.getCountryCode("MLA1234")
 
 	if err != nil || countryCode != "MLA" {
@@ -17,16 +17,33 @@ func TestWhenCountryIsValidCountryCodeGetterReturnsCountryCode(t *testing.T) {
 
 func TestWhenCountryIsInvalidCountryCodeGetterReturnsError(t *testing.T) {
 
-	client := meliclient.New()
-	countryCode, err:= client.getCountryCode("ML")
+	client := New()
+	_, err:= client.getCountryCode("ML")
 
 	if err == nil {
 		t.Fail()
 	}
 
-	countryCode, err = client.getCountryCode("MNN1234")
+	_, err = client.getCountryCode("MNN1234")
 
 	if err == nil {
+		t.Fail()
+	}
+
+}
+
+func TestWhenGivenCategoryAndFirstPageReturnsARequestWithCategoryLimitAndOffset(t *testing.T) {
+
+	client := New()
+	req, _ := client.getCategoryItemsRequest("MLA1234", 0)
+
+	query := req.URL.Query()
+
+	if query.Get("category") != "MLA1234" {
+		t.Fail()
+	}
+
+	if query.Get("offset") != "0" {
 		t.Fail()
 	}
 
