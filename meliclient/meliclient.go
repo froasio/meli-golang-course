@@ -24,7 +24,6 @@ type CategoryItemsResponse struct {
     Results []Item
 }
 
-
 type Client interface {
 	GetCategory(categoryId string) (CategoryResponse, error)
 }
@@ -117,19 +116,23 @@ func (m *meliClient) getCategoryItemsRequest(cat string, page uint) (*http.Reque
 
 func  (m *meliClient) GetCategoryItems(cat string, page uint) (CategoryItemsResponse, error) {
 
-    res := CategoryItemsResponse{}
+    categoryItemsResponse := CategoryItemsResponse{}
 
-    req, err := m.getCategoryItemsRequest(cat,page)
+    request, err := m.getCategoryItemsRequest(cat,page)
     if err != nil {
-        return res, err
+        return categoryItemsResponse, err
     }    
 
-    r, err := m.httpClient.Do(req)
+    response, err := m.httpClient.Do(request)
     if err != nil {
-        return res, err
+        return categoryItemsResponse, err
     }
-    defer r.Body.Close()
+    defer response.Body.Close()
 
-    errDecoding := json.NewDecoder(r.Body).Decode(&res)
-    return res, errDecoding
+	if response.StatusCode != http.StatusOK {
+		return categoryItemsResponse, errors.New("Invalid category items")
+	}
+
+    errDecoding := json.NewDecoder(response.Body).Decode(&categoryItemsResponse)
+    return categoryItemsResponse, errDecoding
 }
