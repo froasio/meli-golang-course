@@ -91,21 +91,20 @@ func (m *meliClient) GetCategory(categoryId string) (CategoryResponse, error) {
 	return categoryResponse, errDecode
 }
 
-func  (m *meliClient) GetCategoryItems(cat string, page uint) (CategoryItemsResponse, error) {
-
-    offset := strconv.Itoa(int(page * 200))
-    limit := strconv.Itoa(int((page + 1) * 200 - 1))
-    res := CategoryItemsResponse{}
+func (m *meliClient) getCategoryItemsRequest(cat string, page uint) (*http.Request, error) {
     
     countryCode, err:= m.getCountryCode(cat)
     
     if err != nil {
-        return res, err
+        return nil, err
     }    
+
+    offset := strconv.Itoa(int(page * 200))
+    limit := strconv.Itoa(int((page + 1) * 200 - 1))
     
     req, err := http.NewRequest("GET", "https://api.mercadolibre.com/sites/" + countryCode + "/search", nil)
     if err != nil {
-        return res,err
+        return req, err
     }
 
     q := req.URL.Query()
@@ -113,6 +112,17 @@ func  (m *meliClient) GetCategoryItems(cat string, page uint) (CategoryItemsResp
     q.Add("limit", limit)
     q.Add("offset", offset)
     req.URL.RawQuery = q.Encode()
+    return req, nil
+}
+
+func  (m *meliClient) GetCategoryItems(cat string, page uint) (CategoryItemsResponse, error) {
+
+    res := CategoryItemsResponse{}
+
+    req, err := m.getCategoryItemsRequest(cat,page)
+    if err != nil {
+        return res, err
+    }    
 
     r, err := m.httpClient.Do(req)
     if err != nil {
