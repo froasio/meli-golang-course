@@ -47,4 +47,12 @@ func TestWhenGivenCategoryAndFirstPageReturnsARequestWithCategoryLimitAndOffset(
 		t.Fail()
 	}
 
+	if query.Get("limit") != "199" {
+		t.Fail()
+	}
+
+	if req.URL.Path != "/sites/MLA/search" {
+		t.Fail()
+	}
+
 }
