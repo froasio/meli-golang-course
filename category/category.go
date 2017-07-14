@@ -29,16 +29,12 @@ func (cd *CategoryPriceData) Map() map[string]interface{} {
 }
 
 type CategoryService interface {
-
 	Price(categoryId string) (data Data, err error)
-
 }
 
 type categoryMeli struct {
-
-	client meliclient.Client
+	client   meliclient.Client
 	pageSize uint
-
 }
 
 func New() *categoryMeli {
@@ -48,16 +44,16 @@ func New() *categoryMeli {
 }
 
 func (c *categoryMeli) getTotalPages(totalItems uint, pageSize uint) uint {
-	
+
 	return (totalItems + pageSize - 1) / pageSize
 
 }
 
 func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
-	
+
 	categoryPriceData := &CategoryPriceData{}
 	categoryData, err := c.client.GetCategory(categoryId)
-	
+
 	if err != nil {
 		return categoryPriceData, err
 	}

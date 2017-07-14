@@ -7,7 +7,7 @@ import (
 func TestWhenCountryIsValidCountryCodeGetterReturnsCountryCode(t *testing.T) {
 
 	client := New()
-	countryCode, err:= client.getCountryCode("MLA1234")
+	countryCode, err := client.getCountryCode("MLA1234")
 
 	if err != nil || countryCode != "MLA" {
 		t.Fail()
@@ -18,7 +18,7 @@ func TestWhenCountryIsValidCountryCodeGetterReturnsCountryCode(t *testing.T) {
 func TestWhenCountryIsInvalidCountryCodeGetterReturnsError(t *testing.T) {
 
 	client := New()
-	_, err:= client.getCountryCode("ML")
+	_, err := client.getCountryCode("ML")
 
 	if err == nil {
 		t.Fail()
