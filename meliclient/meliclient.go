@@ -9,8 +9,8 @@ import (
 )
 
 type CategoryResponse struct {
-	Id                           string
-	Total_items_in_this_category uint
+	Id                           string `json:"id"`
+	TotalItems uint `json:"total_items_in_this_category"`
 }
 
 type Item struct {

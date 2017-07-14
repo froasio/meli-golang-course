@@ -62,10 +62,10 @@ func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
 		return categoryPriceData, err
 	}
 
-	totalPages := c.getTotalPages(categoryData.Total_items_in_this_category, c.pageSize)
+	totalPages := c.getTotalPages(categoryData.TotalItems, c.pageSize)
 
 	categoryPriceData.id = categoryData.Id
-	categoryPriceData.total = categoryData.Total_items_in_this_category
+	categoryPriceData.total = categoryData.TotalItems
 	categoryPriceData.pages = totalPages
 	return categoryPriceData, nil
 
