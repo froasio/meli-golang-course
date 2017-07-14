@@ -13,7 +13,8 @@ type CategoryPriceData struct {
 	min       float64
 	suggested float64
 	max       float64
-	total     int
+	total     uint
+	pages     uint
 }
 
 func (cd *CategoryPriceData) Map() map[string]interface{} {
@@ -23,6 +24,7 @@ func (cd *CategoryPriceData) Map() map[string]interface{} {
 		"Suggested": cd.suggested,
 		"Max":       cd.max,
 		"Total":     cd.total,
+		"Pages":     cd.pages,
 	}
 }
 
@@ -35,12 +37,13 @@ type CategoryService interface {
 type categoryMeli struct {
 
 	client meliclient.Client
+	pageSize uint
 
 }
 
 func New() *categoryMeli {
 
-	return &categoryMeli{client: meliclient.New()}
+	return &categoryMeli{client: meliclient.New(), pageSize: 200}
 
 }
 
@@ -59,8 +62,11 @@ func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
 		return categoryPriceData, err
 	}
 
+	totalPages := c.getTotalPages(categoryData.Total_items_in_this_category, c.pageSize)
+
 	categoryPriceData.id = categoryData.Id
 	categoryPriceData.total = categoryData.Total_items_in_this_category
+	categoryPriceData.pages = totalPages
 	return categoryPriceData, nil
 
 }

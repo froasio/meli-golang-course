@@ -10,7 +10,7 @@ import (
 
 type CategoryResponse struct {
 	Id                           string
-	Total_items_in_this_category int
+	Total_items_in_this_category uint
 }
 
 type Item struct {
@@ -19,13 +19,14 @@ type Item struct {
 
 type CategoryItemsResponse struct {
     Paging struct {
-	Total int
+		Total uint
     }
     Results []Item
 }
 
 type Client interface {
 	GetCategory(categoryId string) (CategoryResponse, error)
+	GetCategoryItems(cat string, page uint, pageSize uint) (CategoryItemsResponse, error)
 }
 
 type meliClient struct {
