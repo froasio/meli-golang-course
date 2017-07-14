@@ -27,20 +27,34 @@ func (cd *CategoryPriceData) Map() map[string]interface{} {
 }
 
 type CategoryService interface {
+
 	Price(categoryId string) (data Data, err error)
+
 }
 
 type categoryMeli struct {
+
 	client meliclient.Client
+
 }
 
 func New() *categoryMeli {
+
 	return &categoryMeli{client: meliclient.New()}
+
+}
+
+func (c *categoryMeli) getTotalPages(totalItems uint, pageSize uint) uint {
+	
+	return (totalItems + pageSize - 1) / pageSize
+
 }
 
 func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
+	
 	categoryPriceData := &CategoryPriceData{}
 	categoryData, err := c.client.GetCategory(categoryId)
+	
 	if err != nil {
 		return categoryPriceData, err
 	}
@@ -48,4 +62,5 @@ func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
 	categoryPriceData.id = categoryData.Id
 	categoryPriceData.total = categoryData.Total_items_in_this_category
 	return categoryPriceData, nil
+
 }

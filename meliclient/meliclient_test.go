@@ -35,7 +35,7 @@ func TestWhenCountryIsInvalidCountryCodeGetterReturnsError(t *testing.T) {
 func TestWhenGivenCategoryAndFirstPageReturnsARequestWithCategoryLimitAndOffset(t *testing.T) {
 
 	client := New()
-	req, _ := client.getCategoryItemsRequest("MLA1234", 0)
+	req, _ := client.getCategoryItemsRequest("MLA1234", 0, 200)
 
 	query := req.URL.Query()
 
