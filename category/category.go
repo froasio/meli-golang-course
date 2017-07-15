@@ -3,6 +3,7 @@ package category
 import (
 	"math"
 	"meli-golang-course/meliclient"
+	"sync"
 )
 
 type Data interface {
@@ -51,17 +52,17 @@ func (c *categoryMeli) getTotalPages(totalItems uint) uint {
 
 }
 
-func (c *categoryMeli) getCategoryPricingByPage(categoryId string, page uint) (CategoryPriceData, error) {
+func (c *categoryMeli) getCategoryPricingByPage(categoryId string, page uint) CategoryPriceData {
 
 	categoryItems, err := c.client.GetCategoryItems(categoryId, page, c.pageSize)
 
 	if err != nil {
-		return CategoryPriceData{}, err
+		return CategoryPriceData{}
 	}
 
 	totalResults := uint(len(categoryItems.Results))
 	if totalResults == 0 {
-		return CategoryPriceData{}, nil
+		return CategoryPriceData{}
 	}
 
 	categoryPriceData := CategoryPriceData{
@@ -81,12 +82,12 @@ func (c *categoryMeli) getCategoryPricingByPage(categoryId string, page uint) (C
 		categoryPriceData.cummulative += categoryItems.Results[i].Price
 	}
 
-	return categoryPriceData, nil
+	return categoryPriceData
 }
 
-func (c *categoryMeli) reduceCategoryPricingPages(pagesData []CategoryPriceData) CategoryPriceData {
+func (c *categoryMeli) reduceCategoryPricingPages(pagesData []CategoryPriceData) *CategoryPriceData {
 
-	categoryPriceData := CategoryPriceData{
+	categoryPriceData := &CategoryPriceData{
 		min:         math.Inf(1),
 		max:         math.Inf(-1),
 		total:       0,
@@ -116,18 +117,31 @@ func (c *categoryMeli) reduceCategoryPricingPages(pagesData []CategoryPriceData)
 
 func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
 
-	categoryPriceData := &CategoryPriceData{}
 	categoryData, err := c.client.GetCategory(categoryId)
+	var wg sync.WaitGroup
 
 	if err != nil {
-		return categoryPriceData, err
+		return &CategoryPriceData{}, err
 	}
 
 	totalPages := c.getTotalPages(categoryData.TotalItems)
+	pagesData := make([]CategoryPriceData, totalPages, totalPages)
 
-	categoryPriceData.id = categoryData.Id
-	categoryPriceData.total = categoryData.TotalItems
-	categoryPriceData.pages = totalPages
+	for i := uint(0); i < totalPages; i++ {
+
+		wg.Add(1)
+		go func(page uint) {
+
+			defer wg.Done()
+			pagesData[page] = c.getCategoryPricingByPage(categoryId, page)
+
+		}(i)
+
+	}
+	wg.Wait()
+
+	categoryPriceData := c.reduceCategoryPricingPages(pagesData)
+
 	return categoryPriceData, nil
 
 }
