@@ -1,7 +1,6 @@
 package category
 
 import (
-	"errors"
 	"meli-golang-course/meliclient"
 )
 
@@ -61,7 +60,7 @@ func (c *categoryMeli) getCategoryPricingByPage(categoryId string, page uint) (C
 
 	totalResults := uint(len(categoryItems.Results))
 	if totalResults == 0 {
-		return CategoryPriceData{}, errors.New("Empty category page")
+		return CategoryPriceData{}, nil
 	}
 
 	categoryPriceData := CategoryPriceData{

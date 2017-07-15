@@ -1,7 +1,6 @@
 package category
 
 import (
-	"fmt"
 	"meli-golang-course/meliclient"
 	"testing"
 )
@@ -49,7 +48,7 @@ func TestTotalPages(t *testing.T) {
 
 }
 
-func TestGetCategoryItems(t *testing.T) {
+func TestGetCategoryItemsPricingCalculation(t *testing.T) {
 
 	max := 10.0
 	min := 1.0
@@ -95,6 +94,28 @@ func TestGetCategoryItems(t *testing.T) {
 	}
 
 	if data.total != total {
+		t.Fail()
+	}
+
+}
+
+func TestWhenTotalItemsIsZeroPricingByPageReturnsTotalIsZero(t *testing.T) {
+
+	response := meliclient.CategoryItemsResponse{
+		Results: []meliclient.Item{},
+	}
+
+	meliclient := &meliClientMock{
+		categoryResponse:           meliclient.CategoryResponse{},
+		categoryResponseError:      nil,
+		categoryItemsResponse:      response,
+		categoryItemsResponseError: nil,
+	}
+
+	cat := &categoryMeli{client: meliclient, pageSize: 200}
+	data, _ := cat.getCategoryPricingByPage("MLA1234", 0)
+
+	if data.total != 0 {
 		t.Fail()
 	}
 
