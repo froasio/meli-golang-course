@@ -120,3 +120,42 @@ func TestWhenTotalItemsIsZeroPricingByPageReturnsTotalIsZero(t *testing.T) {
 	}
 
 }
+
+func TestReducingPagesResults(t *testing.T) {
+
+	pricingPages := []CategoryPriceData{
+		CategoryPriceData{
+			min:         2.0,
+			max:         10.0,
+			cummulative: 100.0,
+			total:       10,
+		},
+		CategoryPriceData{
+			min:         1.0,
+			max:         10.0,
+			cummulative: 100.0,
+			total:       0,
+		},
+		CategoryPriceData{
+			min:         1.0,
+			max:         11.0,
+			cummulative: 100.0,
+			total:       10,
+		},
+	}
+
+	cat := New()
+	data := cat.reduceCategoryPricingPages(pricingPages)
+
+	if data.max != 11.0 {
+		t.Fail()
+	}
+
+	if data.min != 1.0 {
+		t.Fail()
+	}
+
+	if data.suggested != 10.0 {
+		t.Fail()
+	}
+}

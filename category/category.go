@@ -1,6 +1,7 @@
 package category
 
 import (
+	"math"
 	"meli-golang-course/meliclient"
 )
 
@@ -81,6 +82,36 @@ func (c *categoryMeli) getCategoryPricingByPage(categoryId string, page uint) (C
 	}
 
 	return categoryPriceData, nil
+}
+
+func (c *categoryMeli) reduceCategoryPricingPages(pagesData []CategoryPriceData) CategoryPriceData {
+
+	categoryPriceData := CategoryPriceData{
+		min:         math.Inf(1),
+		max:         math.Inf(-1),
+		total:       0,
+		cummulative: 0,
+	}
+
+	for _, data := range pagesData {
+		if data.total != 0 {
+			if data.min < categoryPriceData.min {
+				categoryPriceData.min = data.min
+			}
+			if data.max > categoryPriceData.max {
+				categoryPriceData.max = data.max
+			}
+			categoryPriceData.total += data.total
+			categoryPriceData.cummulative += data.cummulative
+		}
+	}
+
+	if categoryPriceData.total != 0 {
+		categoryPriceData.suggested = categoryPriceData.cummulative / float64(categoryPriceData.total)
+	}
+
+	return categoryPriceData
+
 }
 
 func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
