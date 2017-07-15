@@ -43,9 +43,9 @@ func New() *categoryMeli {
 
 }
 
-func (c *categoryMeli) getTotalPages(totalItems uint, pageSize uint) uint {
+func (c *categoryMeli) getTotalPages(totalItems uint) uint {
 
-	return (totalItems + pageSize - 1) / pageSize
+	return (totalItems + c.pageSize - 1) / c.pageSize
 
 }
 
@@ -58,7 +58,7 @@ func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
 		return categoryPriceData, err
 	}
 
-	totalPages := c.getTotalPages(categoryData.TotalItems, c.pageSize)
+	totalPages := c.getTotalPages(categoryData.TotalItems)
 
 	categoryPriceData.id = categoryData.Id
 	categoryPriceData.total = categoryData.TotalItems
