@@ -18,9 +18,6 @@ type Item struct {
 }
 
 type CategoryItemsResponse struct {
-	Paging struct {
-		Total uint
-	}
 	Results []Item
 }
 
