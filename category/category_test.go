@@ -79,7 +79,7 @@ func TestGetCategoryItemsPricingCalculation(t *testing.T) {
 	}
 
 	cat := &categoryMeli{client: meliclient, pageSize: 200}
-	data, _ := cat.getCategoryPricingByPage("MLA1234", 0)
+	data := cat.getCategoryPricingByPage("MLA1234", 0)
 
 	if data.max != max {
 		t.Fail()
@@ -113,7 +113,7 @@ func TestWhenTotalItemsIsZeroPricingByPageReturnsTotalIsZero(t *testing.T) {
 	}
 
 	cat := &categoryMeli{client: meliclient, pageSize: 200}
-	data, _ := cat.getCategoryPricingByPage("MLA1234", 0)
+	data := cat.getCategoryPricingByPage("MLA1234", 0)
 
 	if data.total != 0 {
 		t.Fail()
