@@ -97,7 +97,7 @@ func (m *meliClient) getCategoryItemsRequest(cat string, page uint, pageSize uin
 	}
 
 	offset := strconv.Itoa(int(page * pageSize))
-	limit := strconv.Itoa(int((page+1)*pageSize - 1))
+	limit := strconv.Itoa(int(pageSize))
 
 	req, err := http.NewRequest("GET", "https://api.mercadolibre.com/sites/"+countryCode+"/search", nil)
 	if err != nil {

@@ -47,7 +47,7 @@ func TestWhenGivenCategoryAndFirstPageReturnsARequestWithCategoryLimitAndOffset(
 		t.Fail()
 	}
 
-	if query.Get("limit") != "199" {
+	if query.Get("limit") != "200" {
 		t.Fail()
 	}
 
