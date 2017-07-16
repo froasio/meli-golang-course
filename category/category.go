@@ -22,12 +22,9 @@ type CategoryPriceData struct {
 
 func (cd *CategoryPriceData) Map() map[string]interface{} {
 	return map[string]interface{}{
-		"Id":        cd.id,
 		"Min":       cd.min,
 		"Suggested": cd.suggested,
 		"Max":       cd.max,
-		"Total":     cd.total,
-		"Pages":     cd.pages,
 	}
 }
 
