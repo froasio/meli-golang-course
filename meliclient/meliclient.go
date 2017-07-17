@@ -28,13 +28,14 @@ type Client interface {
 
 type meliClient struct {
 	httpClient *http.Client
+	baseUrl    string
 }
 
 func New() *meliClient {
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
-	return &meliClient{httpClient: client}
+	return &meliClient{httpClient: client, baseUrl: "https://api.mercadolibre.com"}
 }
 
 func (m *meliClient) getCountryCode(cat string) (string, error) {
@@ -74,7 +75,7 @@ func (m *meliClient) getCountryCode(cat string) (string, error) {
 func (m *meliClient) GetCategory(categoryId string) (CategoryResponse, error) {
 
 	categoryResponse := CategoryResponse{}
-	response, err := m.httpClient.Get("https://api.mercadolibre.com/categories/" + categoryId)
+	response, err := m.httpClient.Get(m.baseUrl + "/categories/" + categoryId)
 	if err != nil {
 		return categoryResponse, err
 	}
@@ -99,7 +100,7 @@ func (m *meliClient) getCategoryItemsRequest(cat string, page uint, pageSize uin
 	offset := strconv.Itoa(int(page * pageSize))
 	limit := strconv.Itoa(int(pageSize))
 
-	req, err := http.NewRequest("GET", "https://api.mercadolibre.com/sites/"+countryCode+"/search", nil)
+	req, err := http.NewRequest("GET", m.baseUrl+"/sites/"+countryCode+"/search", nil)
 	if err != nil {
 		return req, err
 	}
