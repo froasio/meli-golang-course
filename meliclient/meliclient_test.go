@@ -137,3 +137,24 @@ func TestWhenGettingTheCategoryItemsItGetsParsedIntoStruct(t *testing.T) {
 	}
 
 }
+
+func TestWhenSearchingAnInvalidCategoryItReturnsAnError(t *testing.T) {
+
+	getCategoryItemsHandler := func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(http.StatusBadRequest)
+		writer.Write([]byte(""))
+	}
+
+	mux := http.NewServeMux()
+	ts := httptest.NewServer(mux)
+	mux.HandleFunc("/sites/MLA/search/", getCategoryItemsHandler)
+	defer ts.Close()
+
+	client := &meliClient{httpClient: &http.Client{}, baseUrl: ts.URL}
+	_, err := client.GetCategoryItems("MLA1367", 0, 2)
+
+	if err == nil {
+		t.Fail()
+	}
+
+}
