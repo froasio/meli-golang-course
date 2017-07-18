@@ -35,6 +35,25 @@ func (m *meliClientMock) GetCategoryItems(cat string, page uint, pageSize uint) 
 	return m.categoryItemsResponse, m.categoryItemsResponseError
 }
 
+func TestCategoryPriceDataMapping(t *testing.T) {
+
+	cat := &CategoryPriceData{min: 1.0, max: 10.0, suggested: 5.0}
+	catMap := cat.Map()
+
+	if catMap["Min"] != 1.0 {
+		t.Fail()
+	}
+
+	if catMap["Max"] != 10.0 {
+		t.Fail()
+	}
+
+	if catMap["Suggested"] != 5.0 {
+		t.Fail()
+	}
+
+}
+
 func TestTotalPages(t *testing.T) {
 
 	cat := New()

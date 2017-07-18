@@ -11,12 +11,10 @@ type Data interface {
 }
 
 type CategoryPriceData struct {
-	id          string
 	min         float64
 	suggested   float64
 	max         float64
 	total       uint
-	pages       uint
 	cummulative float64
 }
 
