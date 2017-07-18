@@ -72,7 +72,7 @@ func TestWhenGettingTheCategoryItGetsParsedIntoStruct(t *testing.T) {
 
 	mux := http.NewServeMux()
 	ts := httptest.NewServer(mux)
-	mux.HandleFunc("/categories/MLA10272", getCategoryHandler)
+	mux.HandleFunc("/categories/", getCategoryHandler)
 	defer ts.Close()
 
 	client := &meliClient{httpClient: &http.Client{}, baseUrl: ts.URL}
@@ -85,4 +85,25 @@ func TestWhenGettingTheCategoryItGetsParsedIntoStruct(t *testing.T) {
 	if categoryResponse.TotalItems != 581 {
 		t.Fail()
 	}
+}
+
+func TestWhenGettingAnInvalidCategoryItReturnsAnError(t *testing.T) {
+
+	getCategoryHandler := func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(http.StatusBadRequest)
+		writer.Write([]byte(""))
+	}
+
+	mux := http.NewServeMux()
+	ts := httptest.NewServer(mux)
+	mux.HandleFunc("/categories/", getCategoryHandler)
+	defer ts.Close()
+
+	client := &meliClient{httpClient: &http.Client{}, baseUrl: ts.URL}
+	_, err := client.GetCategory("MLA10272")
+
+	if err == nil {
+		t.Fail()
+	}
+
 }
