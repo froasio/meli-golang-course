@@ -74,8 +74,8 @@ func TestGetCategoryItemsPricingCalculation(t *testing.T) {
 
 	response := meliclient.CategoryItemsResponse{
 		Results: []meliclient.Item{
-			meliclient.Item{Price: 1.0},
 			meliclient.Item{Price: 2.0},
+			meliclient.Item{Price: 1.0},
 			meliclient.Item{Price: 3.0},
 			meliclient.Item{Price: 4.0},
 			meliclient.Item{Price: 5.0},
@@ -177,4 +177,49 @@ func TestReducingPagesResults(t *testing.T) {
 	if data.suggested != 10.0 {
 		t.Fail()
 	}
+}
+
+func TestCalculatingItemsPricing(t *testing.T) {
+
+	max := 10.0
+	min := 1.0
+
+	response := meliclient.CategoryItemsResponse{
+		Results: []meliclient.Item{
+			meliclient.Item{Price: 2.0},
+			meliclient.Item{Price: 1.0},
+			meliclient.Item{Price: 3.0},
+			meliclient.Item{Price: 4.0},
+			meliclient.Item{Price: 5.0},
+			meliclient.Item{Price: 6.0},
+			meliclient.Item{Price: 7.0},
+			meliclient.Item{Price: 8.0},
+			meliclient.Item{Price: 9.0},
+			meliclient.Item{Price: 10.0},
+		},
+	}
+
+	meliclient := &meliClientMock{
+		categoryResponse:           meliclient.CategoryResponse{TotalItems: 10},
+		categoryResponseError:      nil,
+		categoryItemsResponse:      response,
+		categoryItemsResponseError: nil,
+	}
+
+	cat := &categoryMeli{client: meliclient, pageSize: 200}
+	data, _ := cat.Price("MLA1234")
+	dataMapping := data.Map()
+
+	if dataMapping["Max"] != max {
+		t.Fail()
+	}
+
+	if dataMapping["Min"] != min {
+		t.Fail()
+	}
+
+	if dataMapping["Suggested"] != 5.5 {
+		t.Fail()
+	}
+
 }
