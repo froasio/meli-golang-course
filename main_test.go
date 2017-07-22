@@ -2,9 +2,9 @@ package main
 
 import (
 	"errors"
+	"github.com/froasio/meli-golang-course/category"
 	"github.com/gin-gonic/gin"
 	. "github.com/smartystreets/goconvey/convey"
-	"meli-golang-course/category"
 	"net/http"
 	"net/http/httptest"
 	"testing"

@@ -1,8 +1,8 @@
 package category
 
 import (
+	"github.com/froasio/meli-golang-course/meliclient"
 	"math"
-	"meli-golang-course/meliclient"
 	"sync"
 )
 

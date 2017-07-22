@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/froasio/meli-golang-course/category"
 	"github.com/gin-gonic/gin"
-	"meli-golang-course/category"
 	"net/http"
 )
 

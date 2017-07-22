@@ -1,8 +1,8 @@
 package category
 
 import (
+	"github.com/froasio/meli-golang-course/meliclient"
 	. "github.com/smartystreets/goconvey/convey"
-	"meli-golang-course/meliclient"
 	"strconv"
 	"testing"
 )
