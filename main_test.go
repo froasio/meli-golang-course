@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	. "github.com/smartystreets/goconvey/convey"
 	"meli-golang-course/category"
 	"net/http"
 	"net/http/httptest"
@@ -44,23 +45,23 @@ func getRouter(categoryService category.CategoryService) (*gin.Engine, *httptest
 }
 
 func TestWhenServiceCanCalculateCategoryPricingTheApiRespondsOk(t *testing.T) {
-	router, w := getRouter(&categoryMeliMock{})
-	r, _ := http.NewRequest("GET", "/categories/MLA1234/prices", nil)
-	router.ServeHTTP(w, r)
-
-	if w.Code != http.StatusOK {
-		t.Fail()
-	}
+	Convey("Given a router", t, func() {
+		router, w := getRouter(&categoryMeliMock{})
+		Convey("When the category is valid the API should return Ok", func() {
+			r, _ := http.NewRequest("GET", "/categories/MLA1234/prices", nil)
+			router.ServeHTTP(w, r)
+			So(w.Code, ShouldEqual, http.StatusOK)
+		})
+	})
 }
 
 func TestWhenServiceCannotCalculateCategoryPricingTheApiRespondsBadRequest(t *testing.T) {
-
-	router, w := getRouter(&categoryMeliMock{})
-
-	r, _ := http.NewRequest("GET", "/categories/MLA1231/prices", nil)
-	router.ServeHTTP(w, r)
-
-	if w.Code != http.StatusBadRequest {
-		t.Fail()
-	}
+	Convey("Given a router", t, func() {
+		router, w := getRouter(&categoryMeliMock{})
+		Convey("When the category is invalid the API should return Bad Request", func() {
+			r, _ := http.NewRequest("GET", "/categories/MLA1231/prices", nil)
+			router.ServeHTTP(w, r)
+			So(w.Code, ShouldEqual, http.StatusBadRequest)
+		})
+	})
 }
