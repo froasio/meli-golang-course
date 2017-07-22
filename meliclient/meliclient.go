@@ -31,6 +31,28 @@ type meliClient struct {
 	baseUrl    string
 }
 
+var validCountryCode = map[string]bool{
+	"MLA": true,
+	"MBO": true,
+	"MLB": true,
+	"MLC": true,
+	"MCO": true,
+	"MCR": true,
+	"MRD": true,
+	"MEC": true,
+	"MHN": true,
+	"MGT": true,
+	"MLM": true,
+	"MNI": true,
+	"MPY": true,
+	"MPA": true,
+	"MPE": true,
+	"MPT": true,
+	"MSV": true,
+	"MLU": true,
+	"MLV": true,
+}
+
 func New() *meliClient {
 	client := &http.Client{
 		Timeout: time.Second * 10,
@@ -42,27 +64,6 @@ func (m *meliClient) getCountryCode(cat string) (string, error) {
 
 	if len(cat) < 3 {
 		return cat, errors.New("Invalid category")
-	}
-	validCountryCode := map[string]bool{
-		"MLA": true,
-		"MBO": true,
-		"MLB": true,
-		"MLC": true,
-		"MCO": true,
-		"MCR": true,
-		"MRD": true,
-		"MEC": true,
-		"MHN": true,
-		"MGT": true,
-		"MLM": true,
-		"MNI": true,
-		"MPY": true,
-		"MPA": true,
-		"MPE": true,
-		"MPT": true,
-		"MSV": true,
-		"MLU": true,
-		"MLV": true,
 	}
 	countryCode := cat[:3]
 	if _, ok := validCountryCode[countryCode]; ok {
