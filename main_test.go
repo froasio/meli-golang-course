@@ -44,21 +44,15 @@ func getRouter(categoryService category.CategoryService) (*gin.Engine, *httptest
 	return router, w
 }
 
-func TestWhenServiceCanCalculateCategoryPricingTheApiRespondsOk(t *testing.T) {
+func TestPricingAPIResponses(t *testing.T) {
 	Convey("Given a router", t, func() {
 		router, w := getRouter(&categoryMeliMock{})
-		Convey("When the category is valid the API should return Ok", func() {
+		Convey("When the category is valid it should return Ok", func() {
 			r, _ := http.NewRequest("GET", "/categories/MLA1234/prices", nil)
 			router.ServeHTTP(w, r)
 			So(w.Code, ShouldEqual, http.StatusOK)
 		})
-	})
-}
-
-func TestWhenServiceCannotCalculateCategoryPricingTheApiRespondsBadRequest(t *testing.T) {
-	Convey("Given a router", t, func() {
-		router, w := getRouter(&categoryMeliMock{})
-		Convey("When the category is invalid the API should return Bad Request", func() {
+		Convey("When the category is invalid it should return Bad Request", func() {
 			r, _ := http.NewRequest("GET", "/categories/MLA1231/prices", nil)
 			router.ServeHTTP(w, r)
 			So(w.Code, ShouldEqual, http.StatusBadRequest)
