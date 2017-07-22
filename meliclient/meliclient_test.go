@@ -76,7 +76,6 @@ func TestCategoryRequestResponseParsing(t *testing.T) {
 			_, err := client.GetCategory("MLA10272")
 			So(err, ShouldNotBeNil)
 		})
-
 	})
 
 }
@@ -114,7 +113,16 @@ func TestCategoryItemsRequestResponseParsing(t *testing.T) {
 				writer.Write([]byte(""))
 			}
 			mux.HandleFunc("/sites/MLA/search/", getCategoryItemsHandler)
-			_, err := client.GetCategory("MLA1367")
+			_, err := client.GetCategoryItems("MLA1367", 0, 2)
+			So(err, ShouldNotBeNil)
+		})
+		Convey("When category is invalid it should return an error", func() {
+			getCategoryItemsHandler := func(writer http.ResponseWriter, request *http.Request) {
+				writer.WriteHeader(http.StatusBadRequest)
+				writer.Write([]byte(""))
+			}
+			mux.HandleFunc("/sites/MLA/search/", getCategoryItemsHandler)
+			_, err := client.GetCategoryItems("MKK1367", 0, 2)
 			So(err, ShouldNotBeNil)
 		})
 
