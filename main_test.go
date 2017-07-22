@@ -59,3 +59,11 @@ func TestPricingAPIResponses(t *testing.T) {
 		})
 	})
 }
+
+func BenchmarkPricingCalculation(b *testing.B) {
+
+	router, w := getRouter(category.New())
+	r, _ := http.NewRequest("GET", "/categories/MLA1377/prices", nil)
+	router.ServeHTTP(w, r)
+
+}
