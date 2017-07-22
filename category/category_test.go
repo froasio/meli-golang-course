@@ -8,8 +8,8 @@ import (
 )
 
 type Client interface {
-	GetCategory(categoryId string) (meliclient.CategoryResponse, error)
-	GetCategoryItems(cat string, page uint, pageSize uint) (meliclient.CategoryItemsResponse, error)
+	GetCategory(categoryId string) (*meliclient.CategoryResponse, error)
+	GetCategoryItems(cat string, page uint, pageSize uint) (*meliclient.CategoryItemsResponse, error)
 }
 
 type meliClientMock struct {
@@ -19,12 +19,12 @@ type meliClientMock struct {
 	categoryItemsResponseError error
 }
 
-func (m *meliClientMock) GetCategory(categoryId string) (meliclient.CategoryResponse, error) {
-	return m.categoryResponse, m.categoryResponseError
+func (m *meliClientMock) GetCategory(categoryId string) (*meliclient.CategoryResponse, error) {
+	return &(m.categoryResponse), m.categoryResponseError
 }
 
-func (m *meliClientMock) GetCategoryItems(cat string, page uint, pageSize uint) (meliclient.CategoryItemsResponse, error) {
-	return m.categoryItemsResponse, m.categoryItemsResponseError
+func (m *meliClientMock) GetCategoryItems(cat string, page uint, pageSize uint) (*meliclient.CategoryItemsResponse, error) {
+	return &(m.categoryItemsResponse), m.categoryItemsResponseError
 }
 
 func TestCategoryPriceDataMapping(t *testing.T) {
@@ -100,7 +100,7 @@ func TestGetCategoryItemsPricingCalculation(t *testing.T) {
 			}
 
 			data := cat.getCategoryPricingByPage("MLA1234", 0)
-			expectedData := CategoryPriceData{
+			expectedData := &CategoryPriceData{
 				min:         min,
 				max:         max,
 				cummulative: cummulative,
@@ -121,7 +121,7 @@ func TestGetCategoryItemsPricingCalculation(t *testing.T) {
 			}
 
 			data := cat.getCategoryPricingByPage("MLA1234", 0)
-			So(data.total, ShouldEqual, 0)
+			So(data, ShouldBeNil)
 		})
 	})
 
@@ -132,20 +132,15 @@ func TestReducingPagesResults(t *testing.T) {
 	Convey("Given an array of pages results", t, func() {
 		cat := New()
 		Convey("When array is not empty it should reduce the pricing result", func() {
-			pricingPages := []CategoryPriceData{
-				CategoryPriceData{
+			pricingPages := []*CategoryPriceData{
+				&CategoryPriceData{
 					min:         2.0,
 					max:         10.0,
 					cummulative: 100.0,
 					total:       10,
 				},
-				CategoryPriceData{
-					min:         1.0,
-					max:         10.0,
-					cummulative: 100.0,
-					total:       0,
-				},
-				CategoryPriceData{
+				nil,
+				&CategoryPriceData{
 					min:         1.0,
 					max:         11.0,
 					cummulative: 100.0,

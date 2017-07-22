@@ -22,8 +22,8 @@ type CategoryItemsResponse struct {
 }
 
 type Client interface {
-	GetCategory(categoryId string) (CategoryResponse, error)
-	GetCategoryItems(cat string, page uint, pageSize uint) (CategoryItemsResponse, error)
+	GetCategory(categoryId string) (*CategoryResponse, error)
+	GetCategoryItems(cat string, page uint, pageSize uint) (*CategoryItemsResponse, error)
 }
 
 type meliClient struct {
@@ -73,9 +73,9 @@ func (m *meliClient) getCountryCode(cat string) (string, error) {
 
 }
 
-func (m *meliClient) GetCategory(categoryId string) (CategoryResponse, error) {
+func (m *meliClient) GetCategory(categoryId string) (*CategoryResponse, error) {
 
-	categoryResponse := CategoryResponse{}
+	categoryResponse := &CategoryResponse{}
 	response, err := m.httpClient.Get(m.baseUrl + "/categories/" + categoryId)
 	if err != nil {
 		return categoryResponse, err
@@ -86,7 +86,7 @@ func (m *meliClient) GetCategory(categoryId string) (CategoryResponse, error) {
 		return categoryResponse, errors.New("Invalid category")
 	}
 
-	errDecode := json.NewDecoder(response.Body).Decode(&categoryResponse)
+	errDecode := json.NewDecoder(response.Body).Decode(categoryResponse)
 	return categoryResponse, errDecode
 }
 
@@ -114,9 +114,9 @@ func (m *meliClient) getCategoryItemsRequest(cat string, page uint, pageSize uin
 	return req, nil
 }
 
-func (m *meliClient) GetCategoryItems(cat string, page uint, pageSize uint) (CategoryItemsResponse, error) {
+func (m *meliClient) GetCategoryItems(cat string, page uint, pageSize uint) (*CategoryItemsResponse, error) {
 
-	categoryItemsResponse := CategoryItemsResponse{}
+	categoryItemsResponse := &CategoryItemsResponse{}
 
 	request, err := m.getCategoryItemsRequest(cat, page, pageSize)
 	if err != nil {
@@ -133,6 +133,6 @@ func (m *meliClient) GetCategoryItems(cat string, page uint, pageSize uint) (Cat
 		return categoryItemsResponse, errors.New("Invalid category items")
 	}
 
-	errDecoding := json.NewDecoder(response.Body).Decode(&categoryItemsResponse)
+	errDecoding := json.NewDecoder(response.Body).Decode(categoryItemsResponse)
 	return categoryItemsResponse, errDecoding
 }

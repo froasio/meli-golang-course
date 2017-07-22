@@ -64,7 +64,7 @@ func TestCategoryRequestResponseParsing(t *testing.T) {
 			}
 			mux.HandleFunc("/categories/", getCategoryHandler)
 			categoryResponse, _ := client.GetCategory("MLA10272")
-			expectedCategorResponse := CategoryResponse{Id: "MLA10272", TotalItems: 581}
+			expectedCategorResponse := &CategoryResponse{Id: "MLA10272", TotalItems: 581}
 			So(categoryResponse, ShouldResemble, expectedCategorResponse)
 		})
 		Convey("When category request response is invalid it should return an error", func() {
@@ -99,7 +99,7 @@ func TestCategoryItemsRequestResponseParsing(t *testing.T) {
 			}
 			mux.HandleFunc("/sites/MLA/search/", getCategoryItemsHandler)
 			categoryItemsResponse, _ := client.GetCategoryItems("MLA1367", 0, 2)
-			expectedCategoryItems := CategoryItemsResponse{
+			expectedCategoryItems := &CategoryItemsResponse{
 				Results: []Item{
 					Item{Price: 1650},
 					Item{Price: 11000},

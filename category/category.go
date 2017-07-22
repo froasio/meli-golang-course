@@ -47,20 +47,20 @@ func (c *categoryMeli) getTotalPages(totalItems uint) uint {
 
 }
 
-func (c *categoryMeli) getCategoryPricingByPage(categoryId string, page uint) CategoryPriceData {
+func (c *categoryMeli) getCategoryPricingByPage(categoryId string, page uint) *CategoryPriceData {
 
 	categoryItems, err := c.client.GetCategoryItems(categoryId, page, c.pageSize)
 
 	if err != nil {
-		return CategoryPriceData{}
+		return nil
 	}
 
 	totalResults := uint(len(categoryItems.Results))
 	if totalResults == 0 {
-		return CategoryPriceData{}
+		return nil
 	}
 
-	categoryPriceData := CategoryPriceData{
+	categoryPriceData := &CategoryPriceData{
 		min:         categoryItems.Results[0].Price,
 		max:         categoryItems.Results[0].Price,
 		total:       totalResults,
@@ -80,7 +80,7 @@ func (c *categoryMeli) getCategoryPricingByPage(categoryId string, page uint) Ca
 	return categoryPriceData
 }
 
-func (c *categoryMeli) reduceCategoryPricingPages(pagesData []CategoryPriceData) *CategoryPriceData {
+func (c *categoryMeli) reduceCategoryPricingPages(pagesData []*CategoryPriceData) *CategoryPriceData {
 
 	categoryPriceData := &CategoryPriceData{
 		min:         math.Inf(1),
@@ -90,7 +90,7 @@ func (c *categoryMeli) reduceCategoryPricingPages(pagesData []CategoryPriceData)
 	}
 
 	for _, data := range pagesData {
-		if data.total != 0 {
+		if data != nil {
 			if data.min < categoryPriceData.min {
 				categoryPriceData.min = data.min
 			}
@@ -120,7 +120,7 @@ func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
 	}
 
 	totalPages := c.getTotalPages(categoryData.TotalItems)
-	pagesData := make([]CategoryPriceData, totalPages, totalPages)
+	pagesData := make([]*CategoryPriceData, totalPages, totalPages)
 
 	for i := uint(0); i < totalPages; i++ {
 
