@@ -1,6 +1,7 @@
 package category
 
 import (
+	"errors"
 	"github.com/froasio/meli-golang-course/meliclient"
 	. "github.com/smartystreets/goconvey/convey"
 	"strconv"
@@ -108,7 +109,7 @@ func TestGetCategoryItemsPricingCalculation(t *testing.T) {
 			}
 			So(data, ShouldResemble, expectedData)
 		})
-		Convey("When response is empty pricing total should be 0", func() {
+		Convey("When response is empty it should return nil", func() {
 			response := meliclient.CategoryItemsResponse{
 				Results: []meliclient.Item{},
 			}
@@ -118,6 +119,17 @@ func TestGetCategoryItemsPricingCalculation(t *testing.T) {
 				categoryResponseError:      nil,
 				categoryItemsResponse:      response,
 				categoryItemsResponseError: nil,
+			}
+
+			data := cat.getCategoryPricingByPage("MLA1234", 0)
+			So(data, ShouldBeNil)
+		})
+		Convey("When response returns an error it should return nil", func() {
+			cat.client = &meliClientMock{
+				categoryResponse:           meliclient.CategoryResponse{},
+				categoryResponseError:      nil,
+				categoryItemsResponse:      meliclient.CategoryItemsResponse{},
+				categoryItemsResponseError: errors.New("Response error"),
 			}
 
 			data := cat.getCategoryPricingByPage("MLA1234", 0)
@@ -199,6 +211,17 @@ func TestCalculatingItemsPricing(t *testing.T) {
 				"Suggested": 5.5,
 			}
 			So(dataMapping, ShouldResemble, expectedMap)
+		})
+		Convey("When category is invalid it should return an error", func() {
+			meliclient := &meliClientMock{
+				categoryResponse:           meliclient.CategoryResponse{},
+				categoryResponseError:      errors.New("Response error"),
+				categoryItemsResponse:      meliclient.CategoryItemsResponse{},
+				categoryItemsResponseError: nil,
+			}
+			cat := &categoryMeli{client: meliclient, pageSize: 200}
+			_, err := cat.Price(categoryId)
+			So(err, ShouldNotBeNil)
 		})
 	})
 
