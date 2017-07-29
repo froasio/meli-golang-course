@@ -18,3 +18,6 @@ The resource should response on the following route
 Example:
 
 curl -X GET “http://mydomain.com/categories/MLA3530/prices”
+
+Limitations:
+- The solution considers that all the prices have the same currency.
