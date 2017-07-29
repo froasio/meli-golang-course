@@ -203,7 +203,7 @@ func TestCalculatingItemsPricing(t *testing.T) {
 			}
 
 			cat := &categoryMeli{client: meliclient, pageSize: 200}
-			data, _ := cat.Price(categoryId)
+			data, _ := cat.PriceEstimation(categoryId)
 			dataMapping := data.Map()
 			expectedMap := map[string]interface{}{
 				"Min":       min,
@@ -220,7 +220,7 @@ func TestCalculatingItemsPricing(t *testing.T) {
 				categoryItemsResponseError: nil,
 			}
 			cat := &categoryMeli{client: meliclient, pageSize: 200}
-			_, err := cat.Price(categoryId)
+			_, err := cat.PriceEstimation(categoryId)
 			So(err, ShouldNotBeNil)
 		})
 	})

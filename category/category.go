@@ -27,7 +27,7 @@ func (cd *CategoryPriceData) Map() map[string]interface{} {
 }
 
 type CategoryService interface {
-	Price(categoryId string) (data Data, err error)
+	PriceEstimation(categoryId string) (data Data, err error)
 }
 
 type categoryMeli struct {
@@ -110,7 +110,7 @@ func (c *categoryMeli) reduceCategoryPricingPages(pagesData []*CategoryPriceData
 
 }
 
-func (c *categoryMeli) Price(categoryId string) (data Data, err error) {
+func (c *categoryMeli) PriceEstimation(categoryId string) (data Data, err error) {
 
 	categoryData, err := c.client.GetCategory(categoryId)
 	var wg sync.WaitGroup

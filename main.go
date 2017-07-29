@@ -12,7 +12,7 @@ func setCategoryPricerRoute(router *gin.Engine, categoryService category.Categor
 
 		categoryId := c.Param("category")
 
-		data, err := categoryService.Price(categoryId)
+		data, err := categoryService.PriceEstimation(categoryId)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
